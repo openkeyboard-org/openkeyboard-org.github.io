@@ -1,10 +1,10 @@
 ---
-interface Props {
+export interface Props {
   title: string;
   description?: string;
 }
 
-const { title, description = 'OpenKeyboard – open source keyboard firmware and tools' } = Astro.props;
+const { title, description = 'OpenKeyboard – open source keyboard firmware and tools' } = Astro.props as Props;
 ---
 
 <!doctype html>
@@ -12,7 +12,7 @@ const { title, description = 'OpenKeyboard – open source keyboard firmware and
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
