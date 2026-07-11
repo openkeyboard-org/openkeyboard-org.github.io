@@ -24,7 +24,10 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Switch Pages source to GitHub Actions
-        run: gh api -X PATCH /repos/${{ github.repository }}/pages -f build_type=workflow || true
+        run: |
+          if ! gh api -X PUT /repos/${{ github.repository }}/pages -f build_type=workflow; then
+            echo "::warning::Could not switch Pages source to GitHub Actions. Manual configuration may be required in repository settings."
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
