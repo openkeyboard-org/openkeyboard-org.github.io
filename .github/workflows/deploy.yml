@@ -5,12 +5,6 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Allow this job to clone the repo and create a page deployment
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -19,17 +13,11 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-
-      - name: Switch Pages source to GitHub Actions
-        run: |
-          if ! gh api -X PUT /repos/${{ github.repository }}/pages -f build_type=workflow; then
-            echo "::warning::Could not switch Pages source to GitHub Actions. Manual configuration may be required in repository settings."
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install, build, and upload site
         uses: withastro/action@v6
@@ -38,6 +26,9 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
