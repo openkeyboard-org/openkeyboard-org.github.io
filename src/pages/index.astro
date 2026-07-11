@@ -1,0 +1,179 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="OpenKeyboard – Open Source Keyboard Firmware & Tools">
+  <header>
+    <nav>
+      <a href="/" class="logo">⌨️ OpenKeyboard</a>
+      <ul>
+        <li><a href="https://github.com/openkeyboard-org" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>OpenKeyboard</h1>
+      <p class="tagline">Open source keyboard firmware, tools, and community</p>
+      <div class="actions">
+        <a
+          href="https://github.com/openkeyboard-org"
+          class="btn btn-primary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View on GitHub
+        </a>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🔧</div>
+        <h2>Open Source</h2>
+        <p>All firmware, tooling, and documentation is freely available and community-driven.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h2>Fast & Lightweight</h2>
+        <p>Optimized firmware that runs efficiently on a wide range of keyboard hardware.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h2>Community First</h2>
+        <p>Built by keyboard enthusiasts, for keyboard enthusiasts. Everyone is welcome to contribute.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      &copy; {new Date().getFullYear()} OpenKeyboard contributors &mdash;
+      <a href="https://github.com/openkeyboard-org" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </p>
+  </footer>
+</Layout>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-bg-secondary);
+    padding: 0 2rem;
+  }
+
+  nav {
+    max-width: 64rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  main {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 6rem 0 4rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  .tagline {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    margin-bottom: 2.5rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.75rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: opacity 0.2s;
+  }
+
+  .btn:hover {
+    opacity: 0.85;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1.5rem;
+    padding: 4rem 0;
+  }
+
+  .feature-card {
+    background: var(--color-bg-secondary);
+    border-radius: 0.75rem;
+    padding: 2rem;
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card p {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--color-text-muted);
+    border-top: 1px solid var(--color-bg-secondary);
+    margin-top: 2rem;
+  }
+</style>
