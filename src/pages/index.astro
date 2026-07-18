@@ -152,7 +152,11 @@ import Header from '../components/Header.astro';
 
   @media (prefers-reduced-motion: reduce) {
     .project-card {
-      transition: none;
+      transition: border-color 0.2s;
+    }
+
+    .project-card:hover {
+      transform: none;
     }
   }
 
