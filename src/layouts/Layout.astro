@@ -61,4 +61,48 @@ const { title, description = 'OpenKeyboard – open source keyboard firmware and
     color: var(--color-accent-hover);
     text-decoration: underline;
   }
+
+  main {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.75rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: opacity 0.2s;
+  }
+
+  .btn:hover {
+    opacity: 0.85;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  .btn-secondary {
+    background: var(--color-bg-secondary);
+    color: var(--color-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn {
+      transition: none;
+    }
+  }
+
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--color-text-muted);
+    border-top: 1px solid var(--color-bg-secondary);
+    margin-top: 2rem;
+  }
 </style>

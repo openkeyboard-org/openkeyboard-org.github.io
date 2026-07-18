@@ -38,7 +38,7 @@ import Header from '../components/Header.astro';
     <section id="projects" class="projects">
       <h2 class="section-title">Projects</h2>
       <a href="/opendongle" class="project-card">
-        <div class="project-icon">📡</div>
+        <div class="project-icon" aria-hidden="true">📡</div>
         <div class="project-body">
           <h3>OpenDongle</h3>
           <p>
@@ -65,12 +65,6 @@ import Header from '../components/Header.astro';
 </Layout>
 
 <style>
-  main {
-    max-width: 64rem;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
   .hero {
     text-align: center;
     padding: 6rem 0 4rem;
@@ -98,25 +92,6 @@ import Header from '../components/Header.astro';
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.75rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: opacity 0.2s;
-  }
-
-  .btn:hover {
-    opacity: 0.85;
-    text-decoration: none;
-  }
-
-  .btn-primary {
-    background: var(--color-accent);
-    color: var(--color-bg);
   }
 
   .features {
@@ -175,6 +150,12 @@ import Header from '../components/Header.astro';
     transform: translateY(-2px);
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .project-card {
+      transition: none;
+    }
+  }
+
   .project-icon {
     font-size: 2.5rem;
     line-height: 1;
@@ -211,13 +192,5 @@ import Header from '../components/Header.astro';
   .project-link {
     font-weight: 600;
     color: var(--color-accent);
-  }
-
-  footer {
-    text-align: center;
-    padding: 3rem 2rem;
-    color: var(--color-text-muted);
-    border-top: 1px solid var(--color-bg-secondary);
-    margin-top: 2rem;
   }
 </style>
