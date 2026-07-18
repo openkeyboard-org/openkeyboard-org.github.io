@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
 
 const repoUrl = 'https://github.com/openkeyboard-org/OpenDongle';
 
@@ -56,17 +57,7 @@ const layout = [
   title="OpenDongle — OpenKeyboard"
   description="OpenDongle is a compact, open-source USB Type-A 2.4 GHz wireless keyboard receiver."
 >
-  <header>
-    <nav>
-      <a href="/" class="logo">⌨️ OpenKeyboard</a>
-      <ul>
-        <li><a href="/#projects">Projects</a></li>
-        <li>
-          <a href="https://github.com/openkeyboard-org" target="_blank" rel="noopener noreferrer">GitHub</a>
-        </li>
-      </ul>
-    </nav>
-  </header>
+  <Header />
 
   <main>
     <section class="hero">
@@ -194,37 +185,6 @@ const layout = [
 </Layout>
 
 <style>
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-bg-secondary);
-    padding: 0 2rem;
-  }
-
-  nav {
-    max-width: 64rem;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 4rem;
-    gap: 1rem;
-  }
-
-  .logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-text);
-  }
-
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-  }
-
   main {
     max-width: 64rem;
     margin: 0 auto;
@@ -354,6 +314,8 @@ const layout = [
 
   .hardware {
     padding: 2rem 0;
+    /* Offset the sticky 4rem header so #hardware lands below it. */
+    scroll-margin-top: 5rem;
   }
 
   .section-sub {
