@@ -1,0 +1,68 @@
+---
+// Shared site header. The "Projects" link uses /#projects so it works from
+// any page (on the homepage it resolves to the same-page anchor).
+---
+
+<header>
+  <nav>
+    <a href="/" class="logo">⌨️ OpenKeyboard</a>
+    <ul>
+      <li><a href="/#projects">Projects</a></li>
+      <li>
+        <a href="https://github.com/openkeyboard-org" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-bg-secondary);
+    padding: 0 2rem;
+  }
+
+  nav {
+    max-width: 64rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  /* On very narrow viewports the logo plus links overflow a single 4rem row,
+     so allow the nav to wrap and tighten the horizontal padding. */
+  @media (max-width: 30rem) {
+    header {
+      padding: 0 1rem;
+    }
+
+    nav {
+      height: auto;
+      min-height: 4rem;
+      flex-wrap: wrap;
+      padding: 0.75rem 0;
+    }
+
+    nav ul {
+      gap: 1rem;
+    }
+  }
+</style>

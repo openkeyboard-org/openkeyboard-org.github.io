@@ -1,16 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
 ---
 
 <Layout title="OpenKeyboard">
-  <header>
-    <nav>
-      <a href="/" class="logo">⌨️ OpenKeyboard</a>
-      <ul>
-        <li><a href="https://github.com/openkeyboard-org" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-      </ul>
-    </nav>
-  </header>
+  <Header />
 
   <main>
     <section class="hero">
@@ -40,6 +34,27 @@ import Layout from '../layouts/Layout.astro';
         <p>Built by keyboard enthusiasts, for keyboard enthusiasts.</p>
       </div>
     </section>
+
+    <section id="projects" class="projects">
+      <h2 class="section-title">Projects</h2>
+      <a href="/opendongle" class="project-card">
+        <div class="project-icon" aria-hidden="true">📡</div>
+        <div class="project-body">
+          <h3>OpenDongle</h3>
+          <p>
+            A compact, open-source USB Type-A 2.4 GHz wireless receiver, small enough to fit
+            inside a standard nano-receiver shell. Built on WCH RISC-V wireless MCUs, with
+            two ready-to-fabricate hardware variants.
+          </p>
+          <div class="project-tags">
+            <span class="tag">2.4 GHz receiver</span>
+            <span class="tag">KiCad hardware</span>
+            <span class="tag">RISC-V firmware</span>
+          </div>
+          <span class="project-link">Learn more &rarr;</span>
+        </div>
+      </a>
+    </section>
   </main>
 
   <footer>
@@ -50,43 +65,6 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <style>
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-bg-secondary);
-    padding: 0 2rem;
-  }
-
-  nav {
-    max-width: 64rem;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 4rem;
-    gap: 1rem;
-  }
-
-  .logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-text);
-  }
-
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-  }
-
-  main {
-    max-width: 64rem;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
   .hero {
     text-align: center;
     padding: 6rem 0 4rem;
@@ -114,25 +92,6 @@ import Layout from '../layouts/Layout.astro';
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.75rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: opacity 0.2s;
-  }
-
-  .btn:hover {
-    opacity: 0.85;
-    text-decoration: none;
-  }
-
-  .btn-primary {
-    background: var(--color-accent);
-    color: var(--color-bg);
   }
 
   .features {
@@ -163,11 +122,79 @@ import Layout from '../layouts/Layout.astro';
     line-height: 1.7;
   }
 
-  footer {
-    text-align: center;
-    padding: 3rem 2rem;
+  .projects {
+    padding: 2rem 0 4rem;
+    /* Offset the sticky 4rem header so #projects lands below it. */
+    scroll-margin-top: 5rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-card {
+    display: flex;
+    gap: 1.5rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    color: inherit;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .project-card:hover {
+    text-decoration: none;
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-card {
+      transition: border-color 0.2s;
+    }
+
+    .project-card:hover {
+      transform: none;
+    }
+  }
+
+  .project-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  .project-body h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+
+  .project-body p {
     color: var(--color-text-muted);
-    border-top: 1px solid var(--color-bg-secondary);
-    margin-top: 2rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-accent-hover);
+    background: rgba(56, 189, 248, 0.12);
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+  }
+
+  .project-link {
+    font-weight: 600;
+    color: var(--color-accent);
   }
 </style>

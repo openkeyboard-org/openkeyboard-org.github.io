@@ -1,0 +1,369 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const repoUrl = 'https://github.com/openkeyboard-org/OpenDongle';
+
+const implementations = [
+  {
+    name: 'CH570',
+    mcu: 'WCH CH570Q (DFN-10)',
+    size: '16.4 mm × 10.0 mm',
+    power: 'VBUS direct to V5, internal 3.3 V regulator',
+    status: 'Available',
+    href: `${repoUrl}/tree/main/hardware/CH570`,
+  },
+  {
+    name: 'CH592',
+    mcu: 'WCH CH592D (QFN-20)',
+    size: '16.35 mm × 9.90 mm',
+    power: 'VBUS via XC6206 3.3 V LDO',
+    status: 'Available',
+    href: `${repoUrl}/tree/main/hardware/CH592`,
+  },
+];
+
+const features = [
+  {
+    icon: '📡',
+    title: '2.4 GHz receiver',
+    body: 'A compact USB Type-A wireless receiver with a WCH-derived 2.4 GHz PCB antenna tuned for 0.8 mm FR-4.',
+  },
+  {
+    icon: '🤏',
+    title: 'Nano-sized',
+    body: 'A two-layer board roughly 16 × 10 mm — small enough to sit inside a standard nano-receiver shell.',
+  },
+  {
+    icon: '🦀',
+    title: 'RISC-V inside',
+    body: 'Built around WCH RISC-V wireless MCUs with native USB, in two interchangeable hardware variants.',
+  },
+  {
+    icon: '🔓',
+    title: 'Fully open',
+    body: 'Firmware and tools under Apache 2.0; hardware under the CERN Open Hardware Licence (Weakly Reciprocal).',
+  },
+];
+
+const layout = [
+  { dir: 'firmware/', desc: 'Firmware source and related software artifacts.' },
+  { dir: 'hardware/', desc: 'KiCad hardware design files and documentation.' },
+  { dir: 'tools/', desc: 'Development and support tooling.' },
+];
+---
+
+<Layout
+  title="OpenDongle — OpenKeyboard"
+  description="OpenDongle is a compact, open-source USB Type-A 2.4 GHz wireless keyboard receiver."
+>
+  <Header />
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow"><a href="/#projects">Projects</a> / OpenDongle</p>
+      <h1>OpenDongle</h1>
+      <p class="tagline">
+        A compact, open-source USB Type-A 2.4 GHz wireless receiver — small enough to
+        disappear inside a standard nano-receiver shell.
+      </p>
+      <div class="actions">
+        <a href={repoUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View on GitHub
+        </a>
+        <a href="#hardware" class="btn btn-secondary">Compare hardware</a>
+      </div>
+    </section>
+
+    <section class="features">
+      {
+        features.map((feature) => (
+          <div class="feature-card">
+            <div class="feature-icon" aria-hidden="true">{feature.icon}</div>
+            <h2>{feature.title}</h2>
+            <p>{feature.body}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="prose">
+      <h2>What is OpenDongle?</h2>
+      <p>
+        OpenDongle is an open-source keyboard dongle: a PCB-edge USB Type-A connector, a
+        WCH-derived 2.4 GHz PCB antenna on 0.8 mm FR-4, and a two-layer board built around a
+        WCH RISC-V wireless MCU with native USB. The whole assembly is small enough to fit
+        inside an off-the-shelf nano-receiver enclosure.
+      </p>
+      <p>
+        The design ships as complete KiCad 10 projects. Every symbol and footprint resolves
+        from the project directory via <code>&#36;&#123;KIPRJMOD&#125;</code>, so nothing has to be added to
+        your global KiCad libraries, and each board can be electrically verified from the
+        command line with <code>kicad-cli</code>.
+      </p>
+    </section>
+
+    <section id="hardware" class="hardware">
+      <h2>Hardware implementations</h2>
+      <p class="section-sub">
+        Two variants share the same concept and antenna, and differ in the MCU and its
+        power arrangement. Pick whichever part you can source.
+      </p>
+
+      <div class="table-wrap">
+        <table aria-label="Hardware implementations comparison">
+          <thead>
+            <tr>
+              <th>Variant</th>
+              <th>MCU</th>
+              <th>Board size</th>
+              <th>Power</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              implementations.map((impl) => (
+                <tr>
+                  <td>
+                    <a href={impl.href} target="_blank" rel="noopener noreferrer">
+                      {impl.name}
+                    </a>
+                  </td>
+                  <td>{impl.mcu}</td>
+                  <td>{impl.size}</td>
+                  <td>{impl.power}</td>
+                  <td>
+                    <span class="badge">{impl.status}</span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="prose">
+      <h2>Repository layout</h2>
+      <ul class="layout-list">
+        {
+          layout.map((item) => (
+            <li>
+              <code>{item.dir}</code>
+              <span>{item.desc}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2>Licensing</h2>
+      <p>
+        OpenDongle is split-licensed so both the software and the hardware are genuinely
+        open. Firmware and tools are released under the
+        <a
+          href="https://www.apache.org/licenses/LICENSE-2.0"
+          target="_blank"
+          rel="noopener noreferrer"> Apache License 2.0</a>, and the hardware designs under the
+        <a
+          href="https://cern-ohl.web.cern.ch/"
+          target="_blank"
+          rel="noopener noreferrer"> CERN Open Hardware Licence Version 2 — Weakly Reciprocal</a>.
+      </p>
+
+      <div class="cta">
+        <a href={repoUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          Explore the source
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; {new Date().getFullYear()} OpenKeyboard contributors</p>
+  </footer>
+</Layout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 5rem 0 3rem;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  .tagline {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    margin: 0 auto 2.5rem;
+    max-width: 42rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.5rem;
+    padding: 2rem 0 3rem;
+  }
+
+  .feature-card {
+    background: var(--color-bg-secondary);
+    border-radius: 0.75rem;
+    padding: 1.75rem;
+  }
+
+  .feature-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card p {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  .prose {
+    padding: 2rem 0;
+    max-width: 46rem;
+  }
+
+  .prose h2,
+  .hardware h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose h2:not(:first-child) {
+    margin-top: 2.5rem;
+  }
+
+  .prose p {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--color-bg-secondary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.3rem;
+    color: var(--color-accent-hover);
+  }
+
+  .hardware {
+    padding: 2rem 0;
+    /* Offset the sticky 4rem header so #hardware lands below it. */
+    scroll-margin-top: 5rem;
+  }
+
+  .section-sub {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    margin-bottom: 1.75rem;
+    max-width: 46rem;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-bg-secondary);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 40rem;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-bg-secondary);
+  }
+
+  th {
+    background: var(--color-bg-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  td {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  td a {
+    font-weight: 600;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.12);
+  }
+
+  .layout-list {
+    list-style: none;
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .layout-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .layout-list span {
+    color: var(--color-text-muted);
+  }
+
+  .cta {
+    margin-top: 2.5rem;
+  }
+</style>
