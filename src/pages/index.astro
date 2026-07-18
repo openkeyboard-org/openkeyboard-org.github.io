@@ -7,6 +7,7 @@ import Layout from '../layouts/Layout.astro';
     <nav>
       <a href="/" class="logo">⌨️ OpenKeyboard</a>
       <ul>
+        <li><a href="#projects">Projects</a></li>
         <li><a href="https://github.com/openkeyboard-org" target="_blank" rel="noopener noreferrer">GitHub</a></li>
       </ul>
     </nav>
@@ -39,6 +40,27 @@ import Layout from '../layouts/Layout.astro';
         <h2>Community First</h2>
         <p>Built by keyboard enthusiasts, for keyboard enthusiasts.</p>
       </div>
+    </section>
+
+    <section id="projects" class="projects">
+      <h2 class="section-title">Projects</h2>
+      <a href="/opendongle" class="project-card">
+        <div class="project-icon">📡</div>
+        <div class="project-body">
+          <h3>OpenDongle</h3>
+          <p>
+            A compact, open-source USB Type-A 2.4 GHz wireless receiver, small enough to fit
+            inside a standard nano-receiver shell. Built on WCH RISC-V wireless MCUs, with
+            two ready-to-fabricate hardware variants.
+          </p>
+          <div class="project-tags">
+            <span class="tag">2.4 GHz receiver</span>
+            <span class="tag">KiCad hardware</span>
+            <span class="tag">RISC-V firmware</span>
+          </div>
+          <span class="project-link">Learn more &rarr;</span>
+        </div>
+      </a>
     </section>
   </main>
 
@@ -161,6 +183,70 @@ import Layout from '../layouts/Layout.astro';
   .feature-card p {
     color: var(--color-text-muted);
     line-height: 1.7;
+  }
+
+  .projects {
+    padding: 2rem 0 4rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-card {
+    display: flex;
+    gap: 1.5rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    color: inherit;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .project-card:hover {
+    text-decoration: none;
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  .project-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  .project-body h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+
+  .project-body p {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-accent-hover);
+    background: rgba(56, 189, 248, 0.12);
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+  }
+
+  .project-link {
+    font-weight: 600;
+    color: var(--color-accent);
   }
 
   footer {
