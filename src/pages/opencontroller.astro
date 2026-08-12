@@ -1,0 +1,410 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const repoUrl = 'https://github.com/openkeyboard-org/OpenController';
+
+const capabilities = [
+  {
+    name: 'Pairing & bonding',
+    detail: 'Fresh pair plus persistent bonding held in DataFlash',
+    status: 'Validated',
+    state: 'done',
+  },
+  {
+    name: 'HID report uplink',
+    detail: 'Keyboard-side HID reports delivered over the 2.4 GHz link',
+    status: 'Validated',
+    state: 'done',
+  },
+  {
+    name: 'Connected-mode hopping',
+    detail: 'Channel hopping with a bipolar link-lock servo',
+    status: 'Validated',
+    state: 'done',
+  },
+  {
+    name: 'Reset recovery',
+    detail: '999/1000 over a randomized warm-reset soak, ~2.3 s reconnect',
+    status: 'Validated',
+    state: 'done',
+  },
+  {
+    name: 'BLE HID and OTA',
+    detail: 'Bluetooth LE as a second transport alongside 2.4 GHz',
+    status: 'Planned',
+    state: 'planned',
+  },
+  {
+    name: 'Deep sleep & battery reporting',
+    detail: 'Power-down states and real battery telemetry',
+    status: 'Planned',
+    state: 'planned',
+  },
+];
+
+const features = [
+  {
+    icon: '📶',
+    title: '2.4 GHz uplink',
+    body: 'The keyboard half of the wireless link — pairing, connected-mode hopping, and HID uplink — bench-validated against OpenDongle.',
+  },
+  {
+    icon: '⌨️',
+    title: 'Wireless for QMK',
+    body: 'A companion module that adds 2.4 GHz wireless to a QMK keyboard, driven by the host MCU over a UART command protocol.',
+  },
+  {
+    icon: '🔁',
+    title: 'A/B updates',
+    body: 'Runs under the OpenBoot A/B bootloader, so updates travel over the module’s own UART and always keep a revert path.',
+  },
+  {
+    icon: '🔓',
+    title: 'Fully open',
+    body: 'Firmware and tools under Apache 2.0; hardware under the CERN Open Hardware Licence (Weakly Reciprocal).',
+  },
+];
+
+const layout = [
+  { dir: 'firmware/', desc: 'Firmware source and related software artifacts.' },
+  { dir: 'hardware/', desc: 'Hardware design files and documentation.' },
+  { dir: 'tools/', desc: 'Development and support tooling.' },
+  { dir: 'third_party/', desc: 'Vendored upstream dependencies.' },
+];
+---
+
+<Layout
+  title="OpenController — OpenKeyboard"
+  description="OpenController is an open-source 2.4 GHz wireless keyboard controller, compatible with OpenDongle."
+>
+  <Header />
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow"><a href="/#projects">Projects</a> / OpenController</p>
+      <h1>OpenController</h1>
+      <p class="tagline">
+        An open-source wireless keyboard controller — the keyboard-side half of the
+        2.4 GHz link, built to pair with <a href="/opendongle">OpenDongle</a>.
+      </p>
+      <div class="actions">
+        <a href={repoUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View on GitHub
+        </a>
+        <a href="#status" class="btn btn-secondary">See what works</a>
+      </div>
+    </section>
+
+    <section class="features">
+      {
+        features.map((feature) => (
+          <div class="feature-card">
+            <div class="feature-icon" aria-hidden="true">{feature.icon}</div>
+            <h2>{feature.title}</h2>
+            <p>{feature.body}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="prose">
+      <h2>What is OpenController?</h2>
+      <p>
+        OpenController is a wireless co-processor for keyboards. A WCH CH592F module
+        (QingKe RISC-V4F) sits next to the keyboard’s existing host MCU and speaks a binary
+        command and status protocol over UART, so the host stays in charge of the matrix and
+        the keymap while the module owns the radio. It implements the keyboard side of the
+        same 2.4 GHz link OpenDongle receives: pairing, connected-mode channel hopping, HID
+        report uplink, and persistent bonding stored in DataFlash.
+      </p>
+      <p>
+        The first firmware target is the CH592F, and the 2.4 GHz connected-mode HID link has
+        been bench-validated end to end — against both OpenDongle and a stock production
+        receiver — covering a fresh pair, bonded reconnect, HID delivery, and reset recovery.
+      </p>
+
+      <h2>Boot chain</h2>
+      <p>
+        The application runs under the <a href="/openboot">OpenBoot</a> A/B bootloader.
+        OpenBoot owns the bottom of
+        flash, the application links at one of two slot bases, and updates travel over the
+        module’s own UART — so a keyboard can be updated in place without a debug probe, and
+        a bad image can be reverted to the other slot.
+      </p>
+      <p>
+        Building requires a MounRiver/WCH fork of GCC rather than mainline RISC-V GCC: the
+        closed-source CH59x BLE library is compiled against WCH’s fast-interrupt semantics,
+        and with mainline GCC the image links but silently receives no interrupts. Full
+        toolchain, build, and flashing instructions live in the firmware README.
+      </p>
+    </section>
+
+    <section id="status" class="status">
+      <h2>Status</h2>
+      <p class="section-sub">
+        The 2.4 GHz HID path is validated on the bench today. Bluetooth LE, deep sleep, and
+        battery telemetry are follow-up work.
+      </p>
+
+      <div class="table-wrap">
+        <table aria-label="OpenController capability status">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Detail</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              capabilities.map((cap) => (
+                <tr>
+                  <td class="cap-name">{cap.name}</td>
+                  <td>{cap.detail}</td>
+                  <td>
+                    <span class:list={['badge', cap.state]}>{cap.status}</span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="prose">
+      <h2>Repository layout</h2>
+      <ul class="layout-list">
+        {
+          layout.map((item) => (
+            <li>
+              <code>{item.dir}</code>
+              <span>{item.desc}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2>Licensing</h2>
+      <p>
+        Like the rest of OpenKeyboard, OpenController is split-licensed so both the software
+        and the hardware are genuinely open. Firmware and tools are released under the
+        <a
+          href="https://www.apache.org/licenses/LICENSE-2.0"
+          target="_blank"
+          rel="noopener noreferrer"> Apache License 2.0</a>, and the hardware designs under the
+        <a
+          href="https://cern-ohl.web.cern.ch/"
+          target="_blank"
+          rel="noopener noreferrer"> CERN Open Hardware Licence Version 2 — Weakly Reciprocal</a>.
+        The vendored WCH SDK subset and BLE library are third-party code under their own
+        terms — see the <code>NOTICE</code> file in the repository.
+      </p>
+
+      <div class="cta">
+        <a href={repoUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          Explore the source
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; {new Date().getFullYear()} OpenKeyboard contributors</p>
+  </footer>
+</Layout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 5rem 0 3rem;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  .tagline {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    margin: 0 auto 2.5rem;
+    max-width: 42rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.5rem;
+    padding: 2rem 0 3rem;
+  }
+
+  .feature-card {
+    background: var(--color-bg-secondary);
+    border-radius: 0.75rem;
+    padding: 1.75rem;
+  }
+
+  .feature-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card p {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  .prose {
+    padding: 2rem 0;
+    max-width: 46rem;
+  }
+
+  .prose h2,
+  .status h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose h2:not(:first-child) {
+    margin-top: 2.5rem;
+  }
+
+  .prose p {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--color-bg-secondary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.3rem;
+    color: var(--color-accent-hover);
+  }
+
+  .status {
+    padding: 2rem 0;
+    /* Offset the sticky 4rem header so #status lands below it. */
+    scroll-margin-top: 5rem;
+  }
+
+  .section-sub {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    margin-bottom: 1.75rem;
+    max-width: 46rem;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-bg-secondary);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 40rem;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-bg-secondary);
+  }
+
+  th {
+    background: var(--color-bg-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  td {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .cap-name {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge.done {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.12);
+  }
+
+  .badge.planned {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.12);
+  }
+
+  .layout-list {
+    list-style: none;
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .layout-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .layout-list span {
+    color: var(--color-text-muted);
+  }
+
+  .cta {
+    margin-top: 2.5rem;
+  }
+</style>

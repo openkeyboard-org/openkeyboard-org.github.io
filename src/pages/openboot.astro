@@ -1,0 +1,421 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+const repoUrl = 'https://github.com/openkeyboard-org/OpenBoot';
+
+const chips = [
+  {
+    name: 'CH570 / CH572',
+    region: '[0x2000, 0x3C000)',
+    ram: '12 KiB',
+    transports: ['USB', 'UART'],
+  },
+  {
+    name: 'CH591',
+    region: '[0x2000, 0x30000)',
+    ram: '26 KiB',
+    transports: ['USB', 'UART'],
+  },
+  {
+    name: 'CH592',
+    region: '[0x2000, 0x70000)',
+    ram: '26 KiB',
+    transports: ['USB', 'UART'],
+  },
+];
+
+const features = [
+  {
+    icon: '🥾',
+    title: '8 KiB of flash',
+    body: 'The bootloader lives in the bottom 8 KiB and hands the entire rest of flash to the application.',
+  },
+  {
+    icon: '🔀',
+    title: 'A/B slots',
+    body: 'Updates are written into the slot the device is not running, so a power cut mid-update leaves the working application untouched.',
+  },
+  {
+    icon: '🔌',
+    title: 'One protocol, two transports',
+    body: 'The same OBP frames run over USB HID or UART, so a board can be updated through whichever pin or port it exposes.',
+  },
+  {
+    icon: '🦀',
+    title: 'Cross-platform CLI',
+    body: 'A Rust host tool for Linux, macOS, and Windows that learns each device’s flash geometry from the wire.',
+  },
+];
+
+const guarantees = [
+  'Protocol requests cannot modify the bootloader itself.',
+  'A block must be erased before it can be written.',
+  'An image becomes bootable only after COMMIT verifies its CRC.',
+  'Updates land in the slot the device is not running, so power loss part-way through leaves the previous application intact and the device comes back up on it unaided.',
+];
+
+const layout = [
+  { dir: 'protocol/', desc: 'Shared protocol constants and golden frames.' },
+  { dir: 'firmware/', desc: 'Bootloader, ports, transports, boards, and tests.' },
+  { dir: 'tools/', desc: 'The openboot host CLI.' },
+  { dir: 'docs/', desc: 'Protocol, architecture, and A/B update design.' },
+  { dir: 'third_party/', desc: 'Pinned WCH SDK submodules.' },
+];
+---
+
+<Layout
+  title="OpenBoot — OpenKeyboard"
+  description="OpenBoot is an 8 KiB IAP bootloader for WCH RISC-V microcontrollers, with A/B updates over USB HID or UART."
+>
+  <Header />
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow"><a href="/#projects">Projects</a> / OpenBoot</p>
+      <h1>OpenBoot</h1>
+      <p class="tagline">
+        An 8 KiB IAP bootloader for WCH RISC-V microcontrollers — one protocol over USB HID
+        or UART, and A/B updates a power cut can’t turn into a brick.
+      </p>
+      <div class="actions">
+        <a href={repoUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          View on GitHub
+        </a>
+        <a href="#chips" class="btn btn-secondary">Supported chips</a>
+      </div>
+    </section>
+
+    <section class="features">
+      {
+        features.map((feature) => (
+          <div class="feature-card">
+            <div class="feature-icon" aria-hidden="true">{feature.icon}</div>
+            <h2>{feature.title}</h2>
+            <p>{feature.body}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="prose">
+      <h2>What is OpenBoot?</h2>
+      <p>
+        OpenBoot is an in-application-programming bootloader: it occupies the bottom 8 KiB of
+        flash, and splits everything above it into two equally sized A/B slots. An
+        application is linked for one slot base, and updates are written into the other one.
+        That is what makes an update survivable — the image being replaced is never the image
+        currently keeping the device alive.
+      </p>
+      <p>
+        It is the bootloader <a href="/opencontroller">OpenController</a> runs under, which
+        is what lets a keyboard take a firmware update over its own UART instead of a debug
+        probe.
+      </p>
+
+      <h2>Why an update can’t brick the device</h2>
+      <p>Four rules do the work, and they hold regardless of what the host sends:</p>
+      <ol class="guarantees">
+        {guarantees.map((item) => <li>{item}</li>)}
+      </ol>
+    </section>
+
+    <section id="chips" class="chips">
+      <h2>Supported chips</h2>
+      <p class="section-sub">
+        Each chip and transport combination produces a separate bootloader image. The device
+        reports its own flash geometry, slot layout, and identity when the host connects, so
+        the flashing tool needs no per-chip database.
+      </p>
+
+      <div class="table-wrap">
+        <table aria-label="Supported chips and flash layouts">
+          <thead>
+            <tr>
+              <th>Chip</th>
+              <th>App region</th>
+              <th>RAM</th>
+              <th>Transports</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              chips.map((chip) => (
+                <tr>
+                  <td class="chip-name">{chip.name}</td>
+                  <td><code>{chip.region}</code></td>
+                  <td>{chip.ram}</td>
+                  <td>
+                    <span class="pills">
+                      {chip.transports.map((t) => <span class="pill">{t}</span>)}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="prose">
+      <h2>The protocol</h2>
+      <p>
+        OBP is specified normatively enough that a third-party client can be written from the
+        document alone. Every frame fits in 64 bytes — one USB HID report — and carries a
+        CRC-32 over its own header and payload. The exchange is strict ping-pong, and the
+        golden frame vectors in the repository are themselves normative: an implementation
+        that can’t round-trip them is wrong.
+      </p>
+
+      <h2>The host tool</h2>
+      <p>
+        <code>openboot</code> is a Rust CLI that runs on Linux, macOS, and Windows. Probing is
+        read-only by default, and <code>flash</code> and <code>erase</code> print a plan
+        rather than acting unless you pass <code>--force</code>. It also handles bundles that
+        carry both slot builds at once, picking the right one for the slot the device isn’t
+        running.
+      </p>
+
+      <h2>Repository layout</h2>
+      <ul class="layout-list">
+        {
+          layout.map((item) => (
+            <li>
+              <code>{item.dir}</code>
+              <span>{item.desc}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2>Licensing</h2>
+      <p>
+        OpenBoot is released under the
+        <a
+          href="https://www.apache.org/licenses/LICENSE-2.0"
+          target="_blank"
+          rel="noopener noreferrer"> Apache License 2.0</a>. The pinned WCH SDK submodules
+        under <code>third_party/</code> remain under their own upstream terms.
+      </p>
+
+      <div class="cta">
+        <a href={repoUrl} class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          Explore the source
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; {new Date().getFullYear()} OpenKeyboard contributors</p>
+  </footer>
+</Layout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 5rem 0 3rem;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  .tagline {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    margin: 0 auto 2.5rem;
+    max-width: 42rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1.5rem;
+    padding: 2rem 0 3rem;
+  }
+
+  .feature-card {
+    background: var(--color-bg-secondary);
+    border-radius: 0.75rem;
+    padding: 1.75rem;
+  }
+
+  .feature-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card p {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  .prose {
+    padding: 2rem 0;
+    max-width: 46rem;
+  }
+
+  .prose h2,
+  .chips h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose h2:not(:first-child) {
+    margin-top: 2.5rem;
+  }
+
+  .prose p {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--color-bg-secondary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.3rem;
+    color: var(--color-accent-hover);
+  }
+
+  .guarantees {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .guarantees li {
+    padding-left: 0.35rem;
+  }
+
+  .guarantees li::marker {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .chips {
+    padding: 2rem 0;
+    /* Offset the sticky 4rem header so #chips lands below it. */
+    scroll-margin-top: 5rem;
+  }
+
+  .section-sub {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    margin-bottom: 1.75rem;
+    max-width: 46rem;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-bg-secondary);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 40rem;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-bg-secondary);
+  }
+
+  th {
+    background: var(--color-bg-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  td {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .chip-name {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .pills {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-accent-hover);
+    background: rgba(56, 189, 248, 0.12);
+  }
+
+  .layout-list {
+    list-style: none;
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .layout-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .layout-list span {
+    color: var(--color-text-muted);
+  }
+
+  .cta {
+    margin-top: 2.5rem;
+  }
+</style>

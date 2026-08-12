@@ -37,23 +37,59 @@ import Header from '../components/Header.astro';
 
     <section id="projects" class="projects">
       <h2 class="section-title">Projects</h2>
-      <a href="/opendongle" class="project-card">
-        <div class="project-icon" aria-hidden="true">📡</div>
-        <div class="project-body">
-          <h3>OpenDongle</h3>
-          <p>
-            A compact, open-source USB Type-A 2.4 GHz wireless receiver, small enough to fit
-            inside a standard nano-receiver shell. Built on WCH RISC-V wireless MCUs, with
-            two ready-to-fabricate hardware variants.
-          </p>
-          <div class="project-tags">
-            <span class="tag">2.4 GHz receiver</span>
-            <span class="tag">KiCad hardware</span>
-            <span class="tag">RISC-V firmware</span>
+      <div class="project-grid">
+        <a href="/opendongle" class="project-card">
+          <div class="project-icon" aria-hidden="true">📡</div>
+          <div class="project-body">
+            <h3>OpenDongle</h3>
+            <p>
+              A compact, open-source USB Type-A 2.4 GHz wireless receiver, small enough to fit
+              inside a standard nano-receiver shell. Built on WCH RISC-V wireless MCUs, with
+              two ready-to-fabricate hardware variants.
+            </p>
+            <div class="project-tags">
+              <span class="tag">2.4 GHz receiver</span>
+              <span class="tag">KiCad hardware</span>
+              <span class="tag">RISC-V firmware</span>
+            </div>
+            <span class="project-link">Learn more &rarr;</span>
           </div>
-          <span class="project-link">Learn more &rarr;</span>
-        </div>
-      </a>
+        </a>
+        <a href="/opencontroller" class="project-card">
+          <div class="project-icon" aria-hidden="true">📶</div>
+          <div class="project-body">
+            <h3>OpenController</h3>
+            <p>
+              The keyboard side of the link: a WCH CH592F wireless module that adds 2.4 GHz
+              wireless to a QMK keyboard, driven by the host MCU over UART and paired with
+              OpenDongle.
+            </p>
+            <div class="project-tags">
+              <span class="tag">2.4 GHz link</span>
+              <span class="tag">CH592F firmware</span>
+              <span class="tag">A/B updates</span>
+            </div>
+            <span class="project-link">Learn more &rarr;</span>
+          </div>
+        </a>
+        <a href="/openboot" class="project-card">
+          <div class="project-icon" aria-hidden="true">🥾</div>
+          <div class="project-body">
+            <h3>OpenBoot</h3>
+            <p>
+              An 8 KiB IAP bootloader for WCH RISC-V microcontrollers. One protocol over USB
+              HID or UART, A/B slots so a failed update can’t brick the device, and a
+              cross-platform Rust flashing tool.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Bootloader</span>
+              <span class="tag">A/B updates</span>
+              <span class="tag">Rust CLI</span>
+            </div>
+            <span class="project-link">Learn more &rarr;</span>
+          </div>
+        </a>
+      </div>
     </section>
   </main>
 
@@ -131,6 +167,11 @@ import Header from '../components/Header.astro';
   .section-title {
     font-size: 1.75rem;
     margin-bottom: 1.5rem;
+  }
+
+  .project-grid {
+    display: grid;
+    gap: 1.5rem;
   }
 
   .project-card {
