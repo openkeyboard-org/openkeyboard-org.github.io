@@ -5,7 +5,19 @@
 
 <header>
   <nav>
-    <a href="/" class="logo">⌨️ OpenKeyboard</a>
+    <a href="/" class="logo">
+      <picture>
+        <!-- The single-line logo is too wide to share a row with the links on
+             phones, so swap in the two-line lockup there. -->
+        <source
+          media="(max-width: 30rem)"
+          srcset="/brand/logo-horizontal-stacked-inverted.svg"
+          width="85"
+          height="36"
+        />
+        <img src="/brand/logo-horizontal-inverted.svg" alt="OpenKeyboard" width="267" height="24" />
+      </picture>
+    </a>
     <ul>
       <li><a href="/#projects">Projects</a></li>
       <li>
@@ -21,8 +33,18 @@
     top: 0;
     z-index: 10;
     background: var(--color-bg);
-    border-bottom: 1px solid var(--color-bg-secondary);
     padding: 0 2rem;
+  }
+
+  /* Logo-palette stripe along the bottom edge. */
+  header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--ok-stripe);
   }
 
   nav {
@@ -36,9 +58,14 @@
   }
 
   .logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-text);
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .logo img {
+    display: block;
+    height: 24px;
+    width: auto;
   }
 
   nav ul {
@@ -47,18 +74,22 @@
     gap: 1.5rem;
   }
 
-  /* On very narrow viewports the logo plus links overflow a single 4rem row,
-     so allow the nav to wrap and tighten the horizontal padding. */
+  nav ul a {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  nav ul a:hover {
+    color: var(--color-accent);
+  }
+
   @media (max-width: 30rem) {
     header {
       padding: 0 1rem;
     }
 
-    nav {
-      height: auto;
-      min-height: 4rem;
-      flex-wrap: wrap;
-      padding: 0.75rem 0;
+    .logo img {
+      height: 36px;
     }
 
     nav ul {

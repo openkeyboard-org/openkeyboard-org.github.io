@@ -70,7 +70,7 @@ const layout = [
 >
   <Header />
 
-  <main>
+  <main class="accent-green">
     <section class="hero">
       <p class="eyebrow"><a href="/#projects">Projects</a> / OpenBoot</p>
       <h1>OpenBoot</h1>
@@ -230,10 +230,7 @@ const layout = [
     font-size: clamp(2.5rem, 8vw, 4.5rem);
     font-weight: 800;
     line-height: 1.1;
-    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--color-accent);
     margin-bottom: 1rem;
   }
 
@@ -260,6 +257,7 @@ const layout = [
 
   .feature-card {
     background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
     border-radius: 0.75rem;
     padding: 1.75rem;
   }
@@ -343,7 +341,7 @@ const layout = [
   .table-wrap {
     overflow-x: auto;
     border-radius: 0.75rem;
-    border: 1px solid var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
   }
 
   table {
@@ -356,7 +354,7 @@ const layout = [
   td {
     text-align: left;
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
   }
 
   th {
@@ -394,7 +392,7 @@ const layout = [
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--color-accent-hover);
-    background: rgba(56, 189, 248, 0.12);
+    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
   }
 
   .layout-list {
