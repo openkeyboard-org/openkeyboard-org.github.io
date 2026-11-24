@@ -1,6 +1,32 @@
 ---
 // Shared site header. The "Projects" link uses /#projects so it works from
 // any page (on the homepage it resolves to the same-page anchor).
+//
+// The logo is shown from images, not from the SVGs in public/brand: at header
+// size a browser's own drawing of the SVG is visibly rough on an ordinary
+// display. `npm run logo` draws the images from those SVGs, one for each
+// display density; scripts/make-logo.mjs says what that fixes and how. They
+// are drawn on the header's colour, so they belong on `--color-bg` and
+// nowhere else.
+const files = import.meta.glob<{ default: { src: string } }>('../assets/header-logo/*.png', {
+  eager: true,
+});
+
+/** One logo's images as `srcset` wants them: sharpest display last. */
+function images(logo: 'wide' | 'stacked'): { density: number; url: string }[] {
+  return Object.entries(files)
+    .map(([path, file]) => {
+      const name = path.match(/([a-z]+)-([\d.]+)x\.png$/);
+      return name && name[1] === logo ? { density: Number(name[2]), url: file.default.src } : null;
+    })
+    .filter((image) => image !== null)
+    .sort((a, b) => a.density - b.density);
+}
+
+const srcset = (logo: 'wide' | 'stacked') =>
+  images(logo)
+    .map(({ density, url }) => `${url} ${density}x`)
+    .join(', ');
 ---
 
 <header>
@@ -8,14 +34,16 @@
     <a href="/" class="logo">
       <picture>
         <!-- The single-line logo is too wide to share a row with the links on
-             phones, so swap in the two-line lockup there. -->
-        <source
-          media="(max-width: 30rem)"
-          srcset="/brand/logo-horizontal-stacked-inverted.svg"
-          width="85"
-          height="36"
+             phones, so swap in the two-line lockup there. The sizes are the
+             ones scripts/make-logo.mjs draws for. -->
+        <source media="(max-width: 31rem)" srcset={srcset('stacked')} width="88" height="40" />
+        <img
+          src={images('wide')[0]?.url}
+          srcset={srcset('wide')}
+          alt="OpenKeyboard"
+          width="272"
+          height="32"
         />
-        <img src="/brand/logo-horizontal-inverted.svg" alt="OpenKeyboard" width="267" height="24" />
       </picture>
     </a>
     <ul>
@@ -28,12 +56,25 @@
 </header>
 
 <style>
+  /* The logo's images are drawn for whole pixels, so the logo has to start on
+     one. The header therefore centres its contents with padding rounded down
+     to 4px (a whole number of pixels at every display scale from 100% to 300%
+     in quarter steps), not with `margin: auto`, which gives half pixels
+     whenever the space left over is odd. The images' heights are chosen so
+     that centring them in the 4rem row lands on 4px too. */
   header {
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--color-bg);
-    padding: 0 2rem;
+    background: var(--color-bg); /* the logo's images are drawn on this colour */
+    /* For browsers without round(): centred the same way, to the half pixel. */
+    padding: 0 max(2rem, calc((100% - 64rem) / 2));
+  }
+
+  @supports (padding: round(down, 1px, 4px)) {
+    header {
+      padding: 0 round(down, max(2rem, calc((100% - 64rem) / 2)), 4px);
+    }
   }
 
   /* Logo-palette stripe along the bottom edge. */
@@ -48,8 +89,6 @@
   }
 
   nav {
-    max-width: 64rem;
-    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -62,10 +101,11 @@
     flex-shrink: 0;
   }
 
+  /* Never scaled: a resized image loses what it was drawn for. */
   .logo img {
     display: block;
-    height: 24px;
-    width: auto;
+    width: 272px;
+    height: 32px;
   }
 
   nav ul {
@@ -83,13 +123,16 @@
     color: var(--color-accent-hover);
   }
 
-  @media (max-width: 30rem) {
+  /* 31rem, not the 30rem the pages use: just under it the one-line logo and
+     the links are a few pixels too wide for the row. */
+  @media (max-width: 31rem) {
     header {
       padding: 0 1rem;
     }
 
     .logo img {
-      height: 36px;
+      width: 88px;
+      height: 40px;
     }
 
     nav ul {
