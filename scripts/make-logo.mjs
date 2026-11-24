@@ -30,7 +30,7 @@
 // what the header paints behind the logo. If that changes, change it here and
 // run this again, or the logo will sit in a visible rectangle.
 
-import { mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -95,11 +95,9 @@ const toLinear = Float64Array.from({ length: 256 }, (_, i) => {
 const toStored = (l) => Math.round(255 * (l <= 0.0031308 ? l * 12.92 : 1.055 * l ** (1 / 2.4) - 0.055));
 const behind = [1, 3, 5].map((at) => toLinear[parseInt(BEHIND.slice(at, at + 2), 16)]);
 
-mkdirSync(out, { recursive: true });
-for (const old of readdirSync(out)) {
-  if (/\.png$/.test(old)) rmSync(join(out, old));
-}
-
+// Every image is drawn before anything on disk is touched, so that a failure
+// part-way leaves the images that were already there.
+const drawn = new Map();
 for (const [name, logo] of Object.entries(LOGOS)) {
   const source = readFileSync(join(brand, logo.art), 'utf8');
   const start = source.indexOf('<g id="Components">');
@@ -107,12 +105,20 @@ for (const [name, logo] of Object.entries(LOGOS)) {
   const shapes = source.slice(start, source.lastIndexOf('</svg>'));
 
   for (const density of DENSITIES) {
-    await sharp(await draw(logo, shapes, density), {
+    const png = await sharp(await draw(logo, shapes, density), {
       raw: { width: logo.width * density, height: logo.height * density, channels: 3 },
     })
       .png({ compressionLevel: 9 })
-      .toFile(join(out, `${name}-${density}x.png`));
+      .toBuffer();
+    drawn.set(`${name}-${density}x.png`, png);
   }
+}
+
+// The new images go in first, then any left over from an earlier set go.
+mkdirSync(out, { recursive: true });
+for (const [file, png] of drawn) writeFileSync(join(out, file), png);
+for (const old of readdirSync(out)) {
+  if (/\.png$/.test(old) && !drawn.has(old)) rmSync(join(out, old));
 }
 console.log(`Logo images written to ${out}`);
 
